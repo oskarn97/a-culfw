@@ -258,13 +258,6 @@ moritz_sendraw(uint8_t *dec, int longPreamble)
 {
   uint8_t hblen = dec[0]+1;
   //1kb/s = 1 bit/ms. we send 1 sec preamble + hblen*8 bits
-  uint32_t sum = (longPreamble ? 100 : 0) + (hblen*8)/10;
-  if (credit_10ms < sum) {
-    MULTICC_PREFIX();
-    DS_P(PSTR("LOVF\r\n"));
-    return;
-  }
-  credit_10ms -= sum;
 
 #ifdef USE_RF_MODE
   change_RF_mode(RF_mode_moritz);
