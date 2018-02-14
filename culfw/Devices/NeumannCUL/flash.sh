@@ -118,12 +118,7 @@ echo "Enabling read protection..."
 stm32flash -j -i $GPIO_SEQ -b $BAUDRATE $PORT
 
 
-if service --status-all | grep -Fq 'fhem'; then
-  echo "Starting fhem..."
-  sudo service fhem start
-fi
-
-
+echo "Resetting device..."
 
 function gpio_reset {
    echo "0" > "$RESET_GPIO_PATH/value"
@@ -142,6 +137,11 @@ if [ -f /sys/class/gpio/export ]; then
    gpio_reset
    echo "in" > "$GPIO_RESET_PATH/direction"
    echo $GPIO_RESET > /sys/class/gpio/unexport
+fi
+
+if service --status-all | grep -Fq 'fhem'; then
+  echo "Starting fhem..."
+  sudo service fhem start
 fi
 
 echo "Flashing successful. Please restart your Device by replugging the power now. A normal reboot is not enough."
