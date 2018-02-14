@@ -59,6 +59,11 @@ function flashmode_instructions {
 	fi
 }
 
+if service --status-all | grep -Fq 'fhem'; then
+  echo "Stopping fhem..."
+  sudo service fhem stop
+fi
+
 echo "Removing read protection..."
 flashmode_instructions
 stm32flash -k -i $GPIO_SEQ -b $BAUDRATE $PORT
@@ -111,6 +116,13 @@ fi
 
 echo "Enabling read protection..."
 stm32flash -j -i $GPIO_SEQ -b $BAUDRATE $PORT
+
+
+if service --status-all | grep -Fq 'fhem'; then
+  echo "Starting fhem..."
+  sudo service fhem start
+fi
+
 
 
 function gpio_reset {
