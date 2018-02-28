@@ -147,8 +147,8 @@
 //#define LED2_GPIO             GPIOB
 //#define LED2_PIN              0
 
-#define USBD_CONNECT_PORT     GPIOB
-#define USBD_CONNECT_PIN      9
+//#define USBD_CONNECT_PORT     GPIOB
+//#define USBD_CONNECT_PIN      9
 
 #endif //#ifndef BOARD_H
 

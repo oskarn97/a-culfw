@@ -63,12 +63,23 @@ void MX_USB_DEVICE_Init(void)
 void USBD_Disconnect(void) {
 #ifdef USBD_CONNECT_PIN
   HAL_GPIO_WritePin(USBD_CONNECT_PORT, _BV(USBD_CONNECT_PIN), GPIO_PIN_SET);
+#else
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.Pin = _BV(12);
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(LED_GPIO, _BV(LED_PIN), GPIO_PIN_RESET);
 #endif
 }
 
 void USBD_Connect(void) {
 #ifdef USBD_CONNECT_PIN
   HAL_GPIO_WritePin(USBD_CONNECT_PORT, _BV(USBD_CONNECT_PIN), GPIO_PIN_RESET);
+#else
+    GPIO_InitTypeDef GPIO_InitStruct;
+    GPIO_InitStruct.Pin = _BV(12);
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 #endif
 }
 
