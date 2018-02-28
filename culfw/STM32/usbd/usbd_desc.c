@@ -60,12 +60,15 @@
   */ 
 #define USBD_VID                                1155
 #define USBD_LANGID_STRING                      1033
-#define USBD_MANUFACTURER_STRING      (uint8_t*)"STM32"
+#ifndef USBD_MANUFACTURER
+#define USBD_MANUFACTURER "STM32"
+#endif
+#define USBD_MANUFACTURER_STRING      (uint8_t*)USBD_MANUFACTURER
 #define USBD_PID_FS                             (22336 + CDC_COUNT)
 //#define USBD_PID_FS                             0x0001
 
 
-#define USBD_PRODUCT_STRING_FS        (uint8_t*)"MapleCUL"
+#define USBD_PRODUCT_STRING_FS        (uint8_t*)BOARD_NAME
 #define USBD_CONFIGURATION_STRING_FS  (uint8_t*)"CDC Config"
 #define USBD_INTERFACE_STRING_FS      (uint8_t*)"CDC Interface"
 

@@ -16,6 +16,8 @@
 #define BOARD_ID_STR        "Neumann CUL"
 #endif
 
+#define USBD_MANUFACTURER "oskar.pw"
+
 #define HAS_UART                1
 
 #define HAS_MULTI_CC        4
