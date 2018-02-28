@@ -41,6 +41,7 @@
 #include "usbd_cdc_if.h"
 #include "hal_gpio.h"
 #include "board.h"
+#include "delay.h"
 
 /* USB Device Core handle declaration */
 USBD_HandleTypeDef hUsbDeviceFS;
@@ -64,11 +65,17 @@ void USBD_Disconnect(void) {
 #ifdef USBD_CONNECT_PIN
   HAL_GPIO_WritePin(USBD_CONNECT_PORT, _BV(USBD_CONNECT_PIN), GPIO_PIN_SET);
 #else
+    HAL_GPIO_WritePin(GPIOA, _BV(12), 0);
+    
     GPIO_InitTypeDef GPIO_InitStruct;
     GPIO_InitStruct.Pin = _BV(12);
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(LED_GPIO, _BV(LED_PIN), GPIO_PIN_RESET);
+    
+    HAL_GPIO_WritePin(GPIOA, _BV(12), 0);
+    
+    my_delay_ms(255);
 #endif
 }
 

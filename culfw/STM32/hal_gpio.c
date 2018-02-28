@@ -69,6 +69,7 @@ void hal_UCBD_connect_init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(USBD_CONNECT_PORT, &GPIO_InitStruct);
+    
 #endif
 }
 
