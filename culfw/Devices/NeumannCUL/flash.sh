@@ -1,15 +1,17 @@
 #!/bin/bash
 
 PORT="/dev/ttyAMA0"
-GPIO_RESET=4
-GPIO_BUT=18
+GPIO_RESET_STM=4
+GPIO_BUT_STM=18
+GPIO_RESET_ESP=27
+GPIO0_ESP=17
 BAUDRATE=115200
 DEFAULT_FIRMWARE="PiHat.bin"
 BOOTLOADER="bootloader.bin"
 FIRMWARE_ADDRESS="0x08002000"
 
-GPIO_BEGIN_SEQ="$GPIO_BUT,-$GPIO_RESET,$GPIO_RESET"
-GPIO_END_SEQ="-$GPIO_BUT,-$GPIO_RESET,$GPIO_RESET"
+GPIO_BEGIN_SEQ="$GPIO_BUT_STM,-$GPIO_RESET_STM,$GPIO_RESET_STM"
+GPIO_END_SEQ="-$GPIO_BUT_STM,-$GPIO_RESET_STM,$GPIO_RESET_STM"
 GPIO_SEQ="$GPIO_BEGIN_SEQ:$GPIO_END_SEQ"
 
 FIRMWARE=$1
@@ -17,16 +19,55 @@ FIRMWARE=$1
 
 RETRIES=0
 
-while ! [ -x "$(command -v stm32flash)" ] && [ "$RETRIES" == 0 ]; do
-	if [ -x "$(command -v apt-get)" ]; then
-		echo 'Installing stm32flash...'
-		sudo apt-get install stm32flash
-		RETRIES=$((RETRIES+1))
-	else
-		echo 'Error: stm32flash is not installed.' >&2
-		exit 1
-	fi
-done
+function gpio_reset_stm {
+   gpio_value $GPIO_RESET_STM 0
+   sleep 1
+   gpio_value $GPIO_RESET_STM 1
+}
+
+function gpio_export {
+   if [ -f /sys/class/gpio/export ]; then
+	   echo "Exporting GPIO PIN $1"
+       echo $1 > /sys/class/gpio/export
+       GPIO_PATH="/sys/class/gpio/gpio$1"
+       sudo chmod -R +x $GPIO_PATH
+       echo "out" > "$GPIO_PATH/direction"
+   fi
+}
+
+function gpio_unexport {
+   if [ -f /sys/class/gpio/unexport ]; then
+       GPIO_PATH="/sys/class/gpio/gpio$1"
+       echo "in" > "$GPIO_PATH/direction"
+       echo $1 > /sys/class/gpio/unexport
+   fi
+}
+
+function gpio_value {
+    echo "$2" > "/sys/class/gpio/gpio$1/value"
+}
+
+function apt_install {
+	while ! [ -x "$(command -v $1)" ] && [ "$RETRIES" == 0 ]; do
+		if [ -x "$(command -v apt-get)" ]; then
+			echo 'Installing $1...'
+			sudo apt-get install $1
+			RETRIES=$((RETRIES+1))
+		else
+			echo 'Error: $1 is not installed.' >&2
+			exit 1
+		fi
+	done
+}
+
+apt_install stm32flash
+
+if [ "$1" == "cun" ]; then
+   ESP_MODE=1
+   gpio_export $GPIO_RESET_ESP
+   sleep 1
+   gpio_value $GPIO_RESET_ESP 0
+fi
 
 if [ "$1" == "-i" ]; then
    INTERACTIVE=1
@@ -59,10 +100,8 @@ function flashmode_instructions {
 	fi
 }
 
-if service --status-all | grep -Fq 'fhem'; then
-  echo "Stopping fhem..."
-  sudo service fhem stop
-fi
+echo "Stopping fhem..."
+sudo service fhem stop
 
 echo "Removing read protection..."
 flashmode_instructions
@@ -120,29 +159,33 @@ stm32flash -j -i $GPIO_SEQ -b $BAUDRATE $PORT
 
 echo "Resetting device..."
 
-function gpio_reset {
-   echo "0" > "$RESET_GPIO_PATH/value"
+sleep 2
+gpio_export $GPIO_RESET_STM
+gpio_reset_stm
+sleep 5
+gpio_reset_stm
+gpio_unexport $GPIO_RESET_STM
+
+if [ "$ESP_MODE" == 1 ]; then
+   sleep 3
+   gpio_export $GPIO_RESET_STM
+   gpio_value $GPIO_RESET_STM 0
+   gpio_value $GPIO_RESET_ESP 1
    sleep 1
-   echo "1" > "$RESET_GPIO_PATH/value"
-}
 
-if [ -f /sys/class/gpio/export ]; then
-   sleep 2
-   echo $GPIO_RESET > /sys/class/gpio/export
-   GPIO_RESET_PATH="/sys/class/gpio/gpio$GPIO_RESET"
-   sudo chmod -R +x $GPIO_RESET_PATH
-   echo "out" > "$GPIO_RESET_PATH/direction"
-   gpio_reset
-   sleep 5
-   gpio_reset
-   echo "in" > "$GPIO_RESET_PATH/direction"
-   echo $GPIO_RESET > /sys/class/gpio/unexport
+   echo "Flashing ESP..."
+   esptool.py --port $PORT --baud 115200 write_flash -fs 4MB -ff 80m 0x00000 cun/boot_v1.7.bin 0x1000 cun/user1.bin 0x3FC000 cun/esp_init_data_default.bin 0x3FE000 cun/blank.bin
+   gpio_export $GPIO_RESET_ESP
+   sleep 1
+   gpio_value $GPIO_RESET_ESP 1
+   sleep 1
+   gpio_value $GPIO_RESET_ESP 0
+   sleep 1
+   gpio_unexport $GPIO_RESET_ESP
 fi
 
-if service --status-all | grep -Fq 'fhem'; then
-  echo "Starting fhem..."
-  sudo service fhem start
-fi
+echo "Starting fhem..."
+sudo service fhem start
 
 echo "Flashing successful. Please restart your Device by replugging the power now. A normal reboot is not enough."
 
