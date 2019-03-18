@@ -23,6 +23,9 @@
 
 #define ARM
 
+//#define IGNORE_1PERCENT
+#define MAX_CREDIT 3600
+
 #define HAS_USB
 //#define USB_FIX_SERIAL          "012345"
 #define CDC_COUNT               1
