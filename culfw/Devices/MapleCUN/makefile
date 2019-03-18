@@ -18,7 +18,7 @@ MPU_TYPE_LOWER_CASE := stm32f103xb
 CPU := cortex-m3
 
 # Debugger options, must be empty or GDB
-DEBUG ?= 
+DEBUG ?=
 
 ###############################################################
 #####
@@ -56,6 +56,7 @@ SRCS += ../../clib/mbus/crc.c
 SRCS += ../../clib/rf_mode.c
 SRCS += ../../clib/rf_moritz.c
 SRCS += ../../clib/rf_native.c
+SRCS += ../../clib/lacrosse.c
 SRCS += ../../clib/rf_router.c
 SRCS += ../../clib/rf_receive_bucket.c
 SRCS += ../../clib/rf_receive_esa.c
@@ -159,7 +160,7 @@ OBJS := $(patsubst %.s,%.o,$(SRCS:%.c=%.o))
 
 ifeq ($(DEBUG),GDB)
 OPTIMIZE	 = -O0
-LTO_FLAGS	 = $(OPTIMIZE) -DTRACE_LEVEL=4
+LTO_FLAGS	 = $(OPTIMIZE) -DTRACE_LEVEL=5
 else
 OPTIMIZE	 = -Os
 LTO_FLAGS	 =  -flto -fuse-linker-plugin $(OPTIMIZE) -DTRACE_LEVEL=4
