@@ -8,13 +8,10 @@
 
 #define TTY_BUFSIZE          256      // RAM: TTY_BUFSIZE*4
 
-#if defined PiHat
-#define BOARD_NAME          "Neumann CUL Pi Hat"
-#define BOARD_ID_STR        "Neumann CUL Pi Hat"
-#else
+
 #define BOARD_NAME          "Neumann CUL"
 #define BOARD_ID_STR        "Neumann CUL"
-#endif
+
 
 #define USBD_MANUFACTURER "oskar.pw"
 
@@ -28,9 +25,9 @@
 
 #define HAS_USB
 //#define USB_FIX_SERIAL          "012345"
-#define CDC_COUNT               3
+#define CDC_COUNT               1
 #define CDC_BAUD_RATE           115200
-#define UART_BAUD_RATE          38400
+#define UART_BAUD_RATE          115200
 #define USB_IsConnected		      (CDC_isConnected(0))
 #define HAS_XRAM
 #define USE_RF_MODE
