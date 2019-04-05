@@ -509,9 +509,9 @@ int main(void)
     display_channel |= DISPLAY_TCP;
 #endif
 
-  USBD_Disconnect();
+  /*USBD_Disconnect();
   my_delay_ms(15);
-  USBD_Connect();
+  USBD_Connect();*/
 
 #if defined(HAS_MULTI_CC)
   for (CC1101.instance = 0; CC1101.instance < HAS_MULTI_CC; CC1101.instance++)
