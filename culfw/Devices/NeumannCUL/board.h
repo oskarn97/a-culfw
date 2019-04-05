@@ -29,8 +29,8 @@
 #define HAS_USB
 //#define USB_FIX_SERIAL          "012345"
 #define CDC_COUNT               1
-#define CDC_BAUD_RATE           115200
-#define UART_BAUD_RATE          115200
+#define CDC_BAUD_RATE           38400
+#define UART_BAUD_RATE          38400
 #define USB_IsConnected		      (CDC_isConnected(0))
 #define HAS_XRAM
 #define USE_RF_MODE
