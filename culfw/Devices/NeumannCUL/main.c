@@ -524,8 +524,10 @@ int main(void)
     
   TX_REPORT = 0x21;
 #if defined(HAS_MULTI_CC)
-  for (CC1101.instance = 0; CC1101.instance < HAS_MULTI_CC; CC1101.instance++)
-    set_RF_mode(RF_mode_slow);
+    for (CC1101.instance = 0; CC1101.instance < HAS_MULTI_CC; CC1101.instance++) {
+        set_RF_mode(RF_mode_slow);
+        set_txreport("21");
+    }
   CC1101.instance = 0;
 #else
   set_RF_mode(RF_mode_slow);
