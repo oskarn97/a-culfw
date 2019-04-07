@@ -26,6 +26,7 @@
 //#define IGNORE_1PERCENT
 #define MAX_CREDIT 3600
 
+//#define DBGU_UNIT_IN
 #define HAS_USB
 //#define USB_FIX_SERIAL          "012345"
 #define CDC_COUNT               1

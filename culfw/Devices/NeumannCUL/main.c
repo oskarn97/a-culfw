@@ -274,7 +274,7 @@ const t_fntab fntab1[] = {
     { 'i', it_func },
 #endif
 #ifdef HAS_ASKSIN
-    { 'A', asksin_func },
+    //{ 'A', asksin_func },
 #endif
 #ifdef HAS_MORITZ
     { 'Z', moritz_func },
