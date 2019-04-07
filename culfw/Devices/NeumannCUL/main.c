@@ -539,7 +539,8 @@ int main(void)
   while (1) {
 
 #ifdef HAS_UART
-    uart_task();
+    if(!USB_IsConnected)
+        uart_task();
 #endif
 
     CDC_Task();
