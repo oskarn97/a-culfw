@@ -36,7 +36,7 @@
 #define HAS_XRAM
 #define USE_RF_MODE
 #define USE_HAL
-//#define HAS_ONEWIRE             10        // OneWire Support
+#define HAS_ONEWIRE             10        // OneWire Support
 
 #define HAS_FHT_80b
 #define HAS_FHT_8v
