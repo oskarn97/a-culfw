@@ -158,7 +158,7 @@ stm32flash -j -i $GPIO_SEQ -b $BAUDRATE $PORT
 
 
 echo "Resetting device..."
-
+sleep 1
 gpio_export $GPIO_RESET_STM
 gpio_reset_stm
 gpio_unexport $GPIO_RESET_STM
