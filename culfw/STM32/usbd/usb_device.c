@@ -62,6 +62,7 @@ void MX_USB_DEVICE_Init(void)
 
 }
 void USBD_Disconnect(void) {
+    return;
 #ifdef USBD_CONNECT_PIN
   HAL_GPIO_WritePin(USBD_CONNECT_PORT, _BV(USBD_CONNECT_PIN), GPIO_PIN_SET);
 #else
@@ -80,6 +81,7 @@ void USBD_Disconnect(void) {
 }
 
 void USBD_Connect(void) {
+    return;
 #ifdef USBD_CONNECT_PIN
   HAL_GPIO_WritePin(USBD_CONNECT_PORT, _BV(USBD_CONNECT_PIN), GPIO_PIN_RESET);
 #else
